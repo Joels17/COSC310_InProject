@@ -98,6 +98,23 @@ public class ChatBot {
                 ans=search("certifications", taggedData);
                 break;
             };
+            if(taggedData[i].equals("where")){
+                try {
+                	for(int j = 0; j< taggedData.length; j++) {
+                		ans=placesConnect(taggedData[j]);
+                	}
+    			} catch (IOException e) {
+    				// TODO Auto-generated catch block
+    				e.printStackTrace();
+    			} catch (InterruptedException e) {
+    				// TODO Auto-generated catch block
+    				e.printStackTrace();
+    			} catch (URISyntaxException e) {
+    				// TODO Auto-generated catch block
+    				e.printStackTrace();
+    			}
+                break;
+            };
             if(taggedData[i].equals("know")){
                 try {
                 	for(int j = 0; j< taggedData.length; j++) {
@@ -340,13 +357,25 @@ public class ChatBot {
 		String json = response.body();
 		JSONObject obj = new JSONObject(json);
 		JSONArray arr = obj.getJSONObject("query").getJSONArray("search");
-		String fullAnswer = "";
-		for (int i = 0; i < arr.length(); i++){ //Loop through all results to correctly piece together the string
-		    String snip = arr.getJSONObject(i).getString("snippet");
-		    String ans= Jsoup.parse(snip).text(); // Convert html text to plain
-		    ans = ans.substring(0, ans.lastIndexOf('.')==-1?ans.length():ans.lastIndexOf('.')); //Try to find last period to avoid cuttoff sentences
-		    fullAnswer+=ans + " "; // Add strings together to create the final string
-		}
-		return fullAnswer;
+	    String snip = arr.getJSONObject(0).getString("snippet");
+	    String ans= Jsoup.parse(snip).text(); // Convert html text to plain
+	    ans = ans.substring(0, ans.lastIndexOf('.')==-1?ans.length():ans.lastIndexOf('.')+1); //Try to find last period to avoid cuttoff sentences
+		return ans;
+	}
+	
+	private static String placesConnect(String text) throws IOException, InterruptedException, URISyntaxException {
+		text = text.replaceAll(" ", ""); // Replace space with nothing for http queries
+		HttpClient client = HttpClient.newHttpClient();
+		HttpRequest request = HttpRequest.newBuilder()
+				  .uri(new URI("https://maps.googleapis.com/maps/api/place/findplacefromtext/json?location=49.8880,119.4960&radius=1500&input="+text+"&inputtype=textquery&fields=formatted_address,name,opening_hours,rating&key=AIzaSyCt3XVT05UtmtKkYgHb3JJ2gIR5A3JBdc0"))
+				  .GET()
+				  .build();
+		HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+		String json = response.body();
+		JSONObject obj = new JSONObject(json);
+		JSONArray arr = obj.getJSONArray("candidates");
+	    String snip = arr.getJSONObject(0).getString("formatted_address");
+	    String ans= Jsoup.parse(snip).text(); // Convert html text to plain
+		return ans;
 	}
 }
