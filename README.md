@@ -44,9 +44,6 @@ Generalized method:
 * Download the CoreNLP zip file from: https://stanfordnlp.github.io/CoreNLP/ and extract
 * Reference all of the jars to the class path of the Java project
 
-## New APIs implemented
-### WikipediaAPI
-The WikipediaAPI was implemented into the ChatBot by creating another function that belongs to the ChatBot class. When this function is called with a single word string it will search the API and print the result into the GUI. It takes in the info gathered from the CoreNLP toolkit (specifically the POS tagger) and uses the tagged words to search.
 
 ### Other references
 
@@ -58,5 +55,10 @@ https://github.com/stleary/JSON-java
 This is used for translating the HTML retrieved data to plain text
 https://jsoup.org/
 
+## New APIs implemented
 
+### WikipediaAPI
+The WikipediaAPI was implemented into the ChatBot by creating another function that belongs to the ChatBot class. When this function is called with a single word string it will search the API and print the result into the GUI. It takes in the info gathered from the CoreNLP toolkit (specifically the POS tagger) and uses the tagged words to search.
 
+### Google Places API
+The Google Places API was implemented into the ChatBot by adding another function onto the ChatBot class itself. This function is called with a string and returns an address of where the string is. The location searching is relative to Kelowna, so all searches are within Kelowna area. It takes in the tagged data from CoreNLP's POS tagging and then outputs the answer to the GUI after receiving the JSON data from the API and then parsing it.
