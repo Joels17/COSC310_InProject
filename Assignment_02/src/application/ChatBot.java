@@ -16,6 +16,10 @@ import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.jsoup.Jsoup;
+
 import edu.stanford.nlp.coref.data.CorefChain;
 import edu.stanford.nlp.simple.Document;
 import java.util.Properties;
@@ -42,20 +46,6 @@ public class ChatBot {
     public String sendPhrase(String phrase){
         phrase=dataClean(phrase);
 
-        
-        try {
-			wikiConnect();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (URISyntaxException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
         String ans = "";
         
         String[] stringArray = phrase.split(" ");
@@ -122,6 +112,18 @@ public class ChatBot {
             	break;
             	
             }
+            try {
+				ans=wikiConnect(taggedData[i]);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (URISyntaxException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
         };
       
 
@@ -321,14 +323,22 @@ public class ChatBot {
 	};
 
 
-	private static void wikiConnect() throws IOException, InterruptedException, URISyntaxException {
+	private static String wikiConnect(String text) throws IOException, InterruptedException, URISyntaxException {
 		HttpClient client = HttpClient.newHttpClient();
 		HttpRequest request = HttpRequest.newBuilder()
-				  .uri(new URI("https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=Vancouver&format=json"))
+				  .uri(new URI("https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch="+text+"&format=json"))
 				  .GET()
 				  .build();
 		HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-		
-		System.out.println(response.body());
+		String json = response.body();
+		JSONObject obj = new JSONObject(json);
+		JSONArray arr = obj.getJSONObject("query").getJSONArray("search");
+		String fullAnswer = "";
+		for (int i = 0; i < arr.length(); i++){
+		    String snip = arr.getJSONObject(i).getString("snippet");
+		    String ans= Jsoup.parse(snip).text();
+		    fullAnswer+=ans+" ";
+		}
+		return fullAnswer;
 	}
 }
