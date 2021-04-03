@@ -330,6 +330,7 @@ public class ChatBot {
 
 
 	private static String wikiConnect(String text) throws IOException, InterruptedException, URISyntaxException {
+		text = text.replaceAll(" ", "%20"); // Replace space with %20 for http queries
 		HttpClient client = HttpClient.newHttpClient();
 		HttpRequest request = HttpRequest.newBuilder()
 				  .uri(new URI("https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch="+text+"&format=json"))
