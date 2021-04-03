@@ -98,6 +98,23 @@ public class ChatBot {
                 ans=search("certifications", taggedData);
                 break;
             };
+            if(taggedData[i].equals("know")){
+                try {
+                	for(int j = 0; j< taggedData.length; j++) {
+                		ans=wikiConnect(taggedData[j]);
+                	}
+    			} catch (IOException e) {
+    				// TODO Auto-generated catch block
+    				e.printStackTrace();
+    			} catch (InterruptedException e) {
+    				// TODO Auto-generated catch block
+    				e.printStackTrace();
+    			} catch (URISyntaxException e) {
+    				// TODO Auto-generated catch block
+    				e.printStackTrace();
+    			}
+                break;
+            };
             // if no match found then check if a spelling error was made
             // only take error if high confidence we think it means
             // what we think it means
@@ -112,18 +129,7 @@ public class ChatBot {
             	break;
             	
             }
-            try {
-				ans=wikiConnect(taggedData[i]);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (URISyntaxException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+
         };
       
 
@@ -334,10 +340,11 @@ public class ChatBot {
 		JSONObject obj = new JSONObject(json);
 		JSONArray arr = obj.getJSONObject("query").getJSONArray("search");
 		String fullAnswer = "";
-		for (int i = 0; i < arr.length(); i++){
+		for (int i = 0; i < arr.length(); i++){ //Loop through all results to correctly piece together the string
 		    String snip = arr.getJSONObject(i).getString("snippet");
-		    String ans= Jsoup.parse(snip).text();
-		    fullAnswer+=ans+" ";
+		    String ans= Jsoup.parse(snip).text(); // Convert html text to plain
+		    ans = ans.substring(0, ans.lastIndexOf('.')==-1?ans.length():ans.lastIndexOf('.')); //Try to find last period to avoid cuttoff sentences
+		    fullAnswer+=ans + " "; // Add strings together to create the final string
 		}
 		return fullAnswer;
 	}
