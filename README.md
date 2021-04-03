@@ -44,3 +44,19 @@ Generalized method:
 * Download the CoreNLP zip file from: https://stanfordnlp.github.io/CoreNLP/ and extract
 * Reference all of the jars to the class path of the Java project
 
+## New APIs implemented
+### WikipediaAPI
+The WikipediaAPI was implemented into the ChatBot by creating another function that belongs to the ChatBot class. When this function is called with a single word string it will search the API and print the result into the GUI. It takes in the info gathered from the CoreNLP toolkit (specifically the POS tagger) and uses the tagged words to search.
+
+### Other references
+
+#### Org.json
+This is used for parsing the json data returned by the API
+https://github.com/stleary/JSON-java
+
+#### Jsoup
+This is used for translating the HTML retrieved data to plain text
+https://jsoup.org/
+
+
+

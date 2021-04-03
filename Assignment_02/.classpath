@@ -36,5 +36,7 @@
 	<classpathentry kind="lib" path="C:/Users/joels/Downloads/stanford-corenlp-latest/stanford-corenlp-4.2.0/stanford-corenlp-4.2.0-sources.jar"/>
 	<classpathentry kind="lib" path="C:/Users/joels/Downloads/stanford-corenlp-latest/stanford-corenlp-4.2.0/xom.jar"/>
 	<classpathentry kind="lib" path="C:/Users/joels/Downloads/stanford-corenlp-latest/stanford-corenlp-4.2.0/xom-1.3.2-sources.jar"/>
+	<classpathentry kind="lib" path="C:/Users/joels/Downloads/json-20210307.jar"/>
+	<classpathentry kind="lib" path="C:/Users/joels/Downloads/jsoup-1.13.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

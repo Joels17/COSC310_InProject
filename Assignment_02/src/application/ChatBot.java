@@ -4,11 +4,21 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.net.http.HttpResponse.BodyHandlers;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.jsoup.Jsoup;
 
 import edu.stanford.nlp.coref.data.CorefChain;
 import edu.stanford.nlp.simple.Document;
@@ -102,6 +112,18 @@ public class ChatBot {
             	break;
             	
             }
+            try {
+				ans=wikiConnect(taggedData[i]);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (URISyntaxException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
         };
       
 
@@ -116,7 +138,7 @@ public class ChatBot {
 
   	public String search(String keyword, String[] stringArray){
       //String csvPath="C:\\Users\\Brandon\\Desktop\\csvs\\" + keyword + ".csv";
-      String csvPath="C:\\Users\\mitch\\Desktop\\School\\UBC Okanagan\\COSC 310\\A3\\csvs\\" + keyword + ".csv";
+      String csvPath="C:\\Users\\joels\\Documents\\School\\3rdYear2ndSem\\COSC310\\Assignment_03\\Assignment_02\\csvs\\" + keyword + ".csv";
       ArrayList<String> data = new ArrayList<String>();
       String row = "";
       boolean breakOut = false;
@@ -174,7 +196,7 @@ public class ChatBot {
 
    // coreference function
     public String coreference(String phrase) {
-    	if(counter>=3) {
+    	if(counter>=2) {
     		phrases = phrases.substring(phrases.indexOf(".",2));
     	};
     	counter++;
@@ -299,4 +321,24 @@ public class ChatBot {
 			"salary", "skills", "training", "certifications"
 			
 	};
+
+
+	private static String wikiConnect(String text) throws IOException, InterruptedException, URISyntaxException {
+		HttpClient client = HttpClient.newHttpClient();
+		HttpRequest request = HttpRequest.newBuilder()
+				  .uri(new URI("https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch="+text+"&format=json"))
+				  .GET()
+				  .build();
+		HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+		String json = response.body();
+		JSONObject obj = new JSONObject(json);
+		JSONArray arr = obj.getJSONObject("query").getJSONArray("search");
+		String fullAnswer = "";
+		for (int i = 0; i < arr.length(); i++){
+		    String snip = arr.getJSONObject(i).getString("snippet");
+		    String ans= Jsoup.parse(snip).text();
+		    fullAnswer+=ans+" ";
+		}
+		return fullAnswer;
+	}
 }
