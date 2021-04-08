@@ -17,6 +17,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
 
@@ -103,6 +104,8 @@ public class ChatBot {
                 	for(int j = 0; j< taggedData.length; j++) {
                 		ans=placesConnect(taggedData[j]);
                 	}
+                }catch (JSONException e) {
+                	ans = "Hmm, I am not sure where that is.";
     			} catch (IOException e) {
     				// TODO Auto-generated catch block
     				e.printStackTrace();
